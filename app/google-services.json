@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "223180867939",
+    "firebase_url": "https://frame-dbbbb.firebaseio.com",
+    "project_id": "frame-dbbbb",
+    "storage_bucket": "frame-dbbbb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223180867939:android:794f2d086c3799de",
+        "android_client_info": {
+          "package_name": "com.jangpro.googleframe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223180867939-fbg9nne1el6mk2t9mj9cola3pm0c5udb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jangpro.googleframe",
+            "certificate_hash": "d11e5aeeecbb7d8a8b48d950fa8dbd47aae06236"
+          }
+        },
+        {
+          "client_id": "223180867939-hpvisjujbod4k5c9jvpip3rmlqvenmim.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoUdUOBO_znzfh5f3y9lkZPkd1wKONC8g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223180867939-hpvisjujbod4k5c9jvpip3rmlqvenmim.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
