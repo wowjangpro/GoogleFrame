@@ -1,9 +1,12 @@
 package com.jangpro.googleframe
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.jangpro.googleframe.jsondata.Albums
@@ -37,9 +40,15 @@ class RecyclerViewAdapter(val myalbum:MyAlbum): RecyclerView.Adapter<RecyclerVie
 
             //각각의 아이템 클릭시
             itemView.setOnClickListener({
-                //여기서 토스터를 어떻게?
                 Toast.makeText(itemView.context, "아이템 '${data.title}'를 클릭했습니다.", Toast.LENGTH_LONG).show()
+                itemView.getContext().startActivity(getLaunchIntent(itemView.context));
             })
+        }
+    }
+
+    companion object {
+        fun getLaunchIntent(from: Context) = Intent(from, Slideshow::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         }
     }
 }

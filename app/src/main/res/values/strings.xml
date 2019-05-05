@@ -9,4 +9,8 @@
     <string name="congrats_text">Login Plz. with Google</string>
     <string name="sign_in_button">Google Login</string>
     <string name="sign_out_button">Google Logout</string>
+
+    <string name="title_activity_slideshow">Slideshow</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
