@@ -38,9 +38,9 @@ import retrofit2.Response
 import java.io.IOException
 
 const val PREFS_FILENAME = "com.jangpro.googleframe"
+var accessToken: String?= null
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -128,9 +128,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 try {
                     val acct = GoogleSignIn.getLastSignedInAccount(this)
                     val scope = "oauth2:" + Scopes.EMAIL + " " + Scopes.PROFILE
-                    val accessToken = GoogleAuthUtil.getToken(applicationContext, acct!!.account, scope, Bundle())
+                    accessToken = GoogleAuthUtil.getToken(applicationContext, acct!!.account, scope, Bundle())
                     Log.d("Token", "accessToken:$accessToken") //accessToken:ya29.Gl...
-                    getAlbumList(accessToken)
+                    getAlbumList(accessToken.toString())
                 } catch (e: IOException) {
                     e.printStackTrace()
                 } catch (e: GoogleAuthException) {
@@ -153,6 +153,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         fun getLaunchIntentAlbums(from: Context, access_token: String) = Intent(from, AlbumsActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             putExtra("access_token", access_token)
+        }
+        fun getLaunchIntentPhoto(from: Context, album_id: String) = Intent(from, Slideshow::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            putExtra("access_token", accessToken)
+            putExtra("album_id", album_id)
         }
     }
 

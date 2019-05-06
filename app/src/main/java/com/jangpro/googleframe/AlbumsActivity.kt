@@ -14,7 +14,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class AlbumsActivity : AppCompatActivity() {
-    var accessToken: String?= null
+    var access_token: String?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +24,7 @@ class AlbumsActivity : AppCompatActivity() {
 
     private fun getAlbumList() {
         if (intent.hasExtra("access_token")) {
-            accessToken = intent.getStringExtra("access_token")
+            access_token = intent.getStringExtra("access_token")
         } else {
             Toast.makeText(this, "전달된 이름이 없습니다", Toast.LENGTH_SHORT).show()
         }
@@ -38,7 +38,7 @@ class AlbumsActivity : AppCompatActivity() {
          * Retrofit2을 사용하면 별도의 Thread(AsyncTask)를 만들필요없이
          * 비동기 방식으로 동작하도록 구성할 수 있다
          */
-        val currentWeather = restClient.requestAlbumList(accessToken!!, getString(R.string.google_api_key))
+        val currentWeather = restClient.requestAlbumList(access_token!!, getString(R.string.google_api_key))
         currentWeather.enqueue(object : Callback<MyAlbum> {
             override fun onResponse(call: Call<MyAlbum>?, response: Response<MyAlbum>?) {
                 if(response != null && response.isSuccessful) {

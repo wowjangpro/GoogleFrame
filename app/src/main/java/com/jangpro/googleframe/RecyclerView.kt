@@ -41,14 +41,18 @@ class RecyclerViewAdapter(val myalbum:MyAlbum): RecyclerView.Adapter<RecyclerVie
             //각각의 아이템 클릭시
             itemView.setOnClickListener({
                 Toast.makeText(itemView.context, "아이템 '${data.title}'를 클릭했습니다.", Toast.LENGTH_LONG).show()
-                itemView.getContext().startActivity(getLaunchIntent(itemView.context));
+                itemView.getContext().startActivity(MainActivity.getLaunchIntentPhoto(itemView.context, data.id));
             })
         }
     }
 
+    /*
     companion object {
-        fun getLaunchIntent(from: Context) = Intent(from, Slideshow::class.java).apply {
+        fun getLaunchIntent(from: Context, album_id: String) = Intent(from, Slideshow::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            putExtra("access_token", MainActivity.)
+            putExtra("album_id", album_id)
         }
     }
+    */
 }

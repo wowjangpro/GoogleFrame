@@ -3,14 +3,26 @@ package com.jangpro.googleframe
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
+import android.widget.Toast
+import com.google.gson.Gson
+import com.jangpro.googleframe.jsondata.MyPhoto
+import com.jangpro.googleframe.restful.GetPhotoInterface
+import com.jangpro.googleframe.restful.OkHttp3RetrofitManager
 import kotlinx.android.synthetic.main.activity_slideshow.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
 class Slideshow : AppCompatActivity() {
+    var access_token: String?= null
+    var album_id: String?= null
+
     private val mHideHandler = Handler()
     private val mHidePart2Runnable = Runnable {
         // Delayed removal of status and navigation bar
@@ -60,6 +72,8 @@ class Slideshow : AppCompatActivity() {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         dummy_button.setOnTouchListener(mDelayHideTouchListener)
+
+        getPhotoList()
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -129,5 +143,41 @@ class Slideshow : AppCompatActivity() {
          * and a change of the status and navigation bar.
          */
         private val UI_ANIMATION_DELAY = 300
+    }
+
+    private fun getPhotoList() {
+        if (intent.hasExtra("album_id")) {
+            access_token = intent.getStringExtra("access_token")
+            album_id = intent.getStringExtra("album_id")
+            Log.d("album_id", "" + access_token)
+            Log.d("album_id", "" + album_id)
+        } else {
+            Toast.makeText(this, "전달된 이름이 없습니다", Toast.LENGTH_SHORT).show()
+        }
+
+        val restClient: GetPhotoInterface =
+            OkHttp3RetrofitManager.getRetrofitService(GetPhotoInterface::class.java)
+
+        val currentWeather = restClient.requestPhotoList(
+            access_token!!,
+            getString(R.string.google_api_key),
+            "{'albumId':'$album_id!!'}"
+        )
+        currentWeather.enqueue(object : Callback<MyPhoto> {
+            override fun onResponse(call: Call<MyPhoto>?, response: Response<MyPhoto>?) {
+                if(response != null && response.isSuccessful) {
+                    val gson = Gson()
+                    val myPhotoList = gson.toJson(response.body())
+                    Log.d("photoListResponse", "" + myPhotoList)
+                    fullscreen_content.setText(myPhotoList)
+                }
+                else {
+                    Log.d("photoListResponse", "Error")
+                }
+            }
+            override fun onFailure(call: Call<MyPhoto>?, t: Throwable?) {
+                Log.d("errorResponse", ""+t.toString())
+            }
+        })
     }
 }
