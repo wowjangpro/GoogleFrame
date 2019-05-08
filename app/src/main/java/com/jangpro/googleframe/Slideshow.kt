@@ -159,7 +159,8 @@ class Slideshow : AppCompatActivity() {
             OkHttp3RetrofitManager.getRetrofitService(GetPhotoInterface::class.java)
 
         val currentWeather = restClient.requestPhotoList(
-            access_token!!, getString(R.string.google_api_key), "{\"albumId\":\"AFfJaJYJxwe3HzBIcbRI_d8LZC9yb4g08-Se1_Mnq3eYtudCpcBBN34ye1RClsL7c9FMF3zhQ_6F\"}"
+            "/v1/mediaItems:search?access_token=$access_token&key="+getString(R.string.google_api_key),
+            ""+album_id
         )
         currentWeather.enqueue(object : Callback<MyPhoto> {
             override fun onResponse(call: Call<MyPhoto>?, response: Response<MyPhoto>?) {

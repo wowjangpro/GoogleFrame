@@ -11,14 +11,14 @@ data class Albums(
     val coverPhotoMediaItemId:String
 )
 
-data class MyPhoto(val mediaitems:ArrayList<MediaItems>)
+data class MyPhoto(val mediaItems:ArrayList<MediaItems>)
 
 data class MediaItems(
     val id:String,
     val productUrl:String,
     val baseUrl:String,
     val mimeType:String,
-    val mediaMetadata:List<MediaMetaData>
+    val mediaMetadata:MediaMetaData
 )
 
 data class MediaMetaData(

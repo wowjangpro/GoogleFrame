@@ -2,10 +2,7 @@ package com.jangpro.googleframe.restful
 
 import com.jangpro.googleframe.jsondata.MyAlbum
 import com.jangpro.googleframe.jsondata.MyPhoto
-import okhttp3.FormBody
 import okhttp3.RequestBody
-import okhttp3.ResponseBody
-import okhttp3.internal.http.RealResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -28,11 +25,9 @@ interface GetPhotoInterface {
 */
 interface GetPhotoInterface {
     @FormUrlEncoded
-    @Headers("Content-Type: application/json")
-    @POST("/v1/mediaItems:search")
+    @POST()
     fun requestPhotoList(
-        @Query("access_token") access_token: String,
-        @Query("key") key: String,
-        @Field("body") body: String
+        @Url url: String,
+        @Field("albumId") albumid:String
     ) : Call<MyPhoto>
 }
