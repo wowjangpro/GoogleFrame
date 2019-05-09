@@ -5,15 +5,21 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
+import android.widget.ViewFlipper
+import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.jangpro.googleframe.jsondata.MyPhoto
 import com.jangpro.googleframe.restful.GetPhotoInterface
 import com.jangpro.googleframe.restful.OkHttp3RetrofitManager
 import kotlinx.android.synthetic.main.activity_slideshow.*
+import kotlinx.android.synthetic.main.content_main.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
+
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -22,6 +28,7 @@ import retrofit2.Response
 class Slideshow : AppCompatActivity() {
     var access_token: String?= null
     var album_id: String?= null
+    var v_fllipper: ViewFlipper?= null
 
     private val mHideHandler = Handler()
     private val mHidePart2Runnable = Runnable {
@@ -169,7 +176,13 @@ class Slideshow : AppCompatActivity() {
                     val gson = Gson()
                     val myPhotoList = gson.toJson(response.body())
                     Log.d("photoListResponse", "" + myPhotoList)
-                    fullscreen_content.setText(myPhotoList)
+                    //fullscreen_content.setText(myPhotoList)
+                    val images = intArrayOf(1, 2, 3)
+                    v_fllipper = image_slide
+
+                    for (image in images) {
+                        fllipperImages(image)
+                    }
                 }
                 else {
                     Log.d("photoListResponse", "Error")
@@ -179,5 +192,20 @@ class Slideshow : AppCompatActivity() {
                 Log.d("errorResponse", ""+t.toString())
             }
         })
+    }
+
+    // 이미지 슬라이더 구현 메서드
+    fun fllipperImages(image: Int) {
+        val imageView = ImageView(this)
+        //imageView.setBackgroundResource(image)
+        Glide.with(this).load("https://cdn.pixabay.com/photo/2015/07/27/19/47/turtle-863336__340.jpg").into(imageView)
+
+        v_fllipper!!.addView(imageView)      // 이미지 추가
+        v_fllipper!!.setFlipInterval(4000)       // 자동 이미지 슬라이드 딜레이시간(1000 당 1초)
+        v_fllipper!!.setAutoStart(true)          // 자동 시작 유무 설정
+
+        // animation
+        v_fllipper!!.setInAnimation(this, android.R.anim.slide_in_left)
+        v_fllipper!!.setOutAnimation(this, android.R.anim.slide_out_right)
     }
 }

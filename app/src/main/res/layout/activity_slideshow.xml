@@ -9,9 +9,14 @@
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
+    <ViewFlipper
+            android:id="@+id/image_slide"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
     <TextView android:id="@+id/fullscreen_content"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="246dp"
               android:keepScreenOn="true"
               android:textColor="#33b5e5"
               android:textStyle="bold"
