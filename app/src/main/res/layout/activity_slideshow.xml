@@ -28,7 +28,7 @@
                   android:textColor="#E5FFFFFF"
                   android:textSize="15dp"
                   android:layout_gravity="center_vertical"
-                  android:gravity="right"
+                  android:gravity="center"
                   android:textStyle="italic"
                   tools:visibility="invisible"/>
     </LinearLayout>
