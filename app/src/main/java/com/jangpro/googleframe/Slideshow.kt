@@ -6,14 +6,12 @@ import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import android.widget.ViewFlipper
 import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.jangpro.googleframe.jsondata.MediaItems
-import com.jangpro.googleframe.jsondata.MyAlbum
 import com.jangpro.googleframe.jsondata.MyPhoto
 import com.jangpro.googleframe.restful.GetPhotoInterface
 import com.jangpro.googleframe.restful.OkHttp3RetrofitManager
@@ -21,9 +19,8 @@ import kotlinx.android.synthetic.main.activity_slideshow.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.Thread.sleep
-import java.util.*
-import kotlin.concurrent.schedule
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 /**
@@ -34,6 +31,7 @@ class Slideshow : AppCompatActivity() {
     var access_token: String?= null
     var album_id: String?= null
     var arrImages: Array<Any>?= null
+    var mediaItems: List<Any>?= null
 
     private val mHideHandler = Handler()
     private val mHidePart2Runnable = Runnable {
@@ -189,8 +187,9 @@ class Slideshow : AppCompatActivity() {
                     Log.d("photoListResponse", "" + myPhotoList)
 
                     val gsonObj = GsonBuilder().setPrettyPrinting().create()
-                    val mediaList: MediaItems = gsonObj.fromJson(myPhotoList, object : TypeToken<MediaItems>() {}.type)
-                    Log.d("mediaList", "" + myPhotoList[0])
+                    val mediaList: MyPhoto = gsonObj.fromJson(myPhotoList, object : TypeToken<MyPhoto>() {}.type)
+                    mediaItems = mediaList.mediaItems
+                    Log.d("mediaList", "" + (mediaItems as List<MediaItems>)[0].productUrl)
 /*
                     for (image in images) {
                         Log.d("typeOfimage", "" + arrImages[image])
@@ -236,15 +235,22 @@ class Slideshow : AppCompatActivity() {
     }
 
     fun waitGuest(){
-        mDelayHandler.postDelayed(::showGuest, 2000) // 10초 후에 showGuest 함수를 실행한다.
+        mDelayHandler.postDelayed(::showGuest, 10000) // 10초 후에 showGuest 함수를 실행한다.
     }
 
     fun showGuest(){
-        Log.d("typeOfimage", "" + arrImages!![i])
-        Glide.with(this@Slideshow).load(arrImages!![i]).transition(GenericTransitionOptions.with(android.R.anim.slide_in_left)).into(imageView)
-        fullscreen_content.setText(arrImages!![i].toString())
+        var itemCnt = (mediaItems as List<MediaItems>).count()
+        var createDate = (mediaItems as List<MediaItems>)[i].mediaMetadata.creationTime
+        Log.d("mediaList", "" + itemCnt)
+        Log.d("mediaList", "" + (mediaItems as List<MediaItems>)[i].baseUrl)
+        Glide.with(this@Slideshow).load((mediaItems as List<MediaItems>)[i].baseUrl).transition(GenericTransitionOptions.with(android.R.anim.slide_in_left)).into(imageView)
+
+        var datenow = LocalDate.parse(createDate.substring(0,10), DateTimeFormatter.ISO_DATE)
+
+
+        fullscreen_content.setText(datenow.toString()+"  ")
         i++
-        if (i == 3) i = 0
+        if (i == itemCnt) i = 0
         waitGuest() // 코드 실행뒤에 계속해서 반복하도록 작업한다.
     }
 

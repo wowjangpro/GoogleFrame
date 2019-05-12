@@ -1,29 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:background="#0099cc"
+             android:background="#000000"
              tools:context=".Slideshow">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
-    <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:id="@+id/imageView"/>
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:id="@+id/imageView"/>
 
-    <TextView android:id="@+id/fullscreen_content"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:keepScreenOn="true"
-              android:textColor="#FFFFFF"
-              android:textStyle="bold"
-              android:textSize="30sp"
-              android:gravity="center"
-              android:text="@string/dummy_content"/>
+    <LinearLayout
+                  style="?metaButtonBarStyle"
+                  android:layout_width="match_parent"
+                  android:layout_height="30dp"
+                  android:layout_gravity="bottom">
+        <TextView android:id="@+id/fullscreen_content"
+                  android:layout_width="match_parent"
+                  android:layout_height="20dp"
+                  android:keepScreenOn="true"
+                  android:textColor="#E5FFFFFF"
+                  android:textSize="15dp"
+                  android:layout_gravity="center_vertical"
+                  android:gravity="right"
+                  android:textStyle="italic"
+                  tools:visibility="invisible"/>
+    </LinearLayout>
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->

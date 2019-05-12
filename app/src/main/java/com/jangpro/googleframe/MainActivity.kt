@@ -195,7 +195,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     */
                     //레이아웃매니저 설정
                     //recyclerView.layoutManager = LinearLayoutManager(applicationContext, LinearLayout.HORIZONTAL, false)
-                    recyclerView.layoutManager = GridLayoutManager(applicationContext, 1)
+                    recyclerView.layoutManager = GridLayoutManager(applicationContext, 2)
                     recyclerView.setHasFixedSize(true)
 
                     //어답터 설정
