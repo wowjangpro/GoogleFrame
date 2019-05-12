@@ -10,6 +10,10 @@ import android.widget.ViewFlipper
 import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
+import com.jangpro.googleframe.jsondata.MediaItems
+import com.jangpro.googleframe.jsondata.MyAlbum
 import com.jangpro.googleframe.jsondata.MyPhoto
 import com.jangpro.googleframe.restful.GetPhotoInterface
 import com.jangpro.googleframe.restful.OkHttp3RetrofitManager
@@ -29,7 +33,7 @@ import kotlin.concurrent.schedule
 class Slideshow : AppCompatActivity() {
     var access_token: String?= null
     var album_id: String?= null
-    var v_flipper: ViewFlipper?= null
+    var arrImages: Array<Any>?= null
 
     private val mHideHandler = Handler()
     private val mHidePart2Runnable = Runnable {
@@ -172,7 +176,7 @@ class Slideshow : AppCompatActivity() {
             ""+album_id
         )
 
-        var arrImages = arrayOf("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgaMt3LizQuIgGAXe5PG-8H3dlhw5M0-oGu_siUB7ofgdD3ioh",
+        arrImages = arrayOf("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgaMt3LizQuIgGAXe5PG-8H3dlhw5M0-oGu_siUB7ofgdD3ioh",
             "https://cdn.pixabay.com/photo/2015/07/27/19/47/turtle-863336__340.jpg",
             "https://en.es-static.us/upl/2019/01/moon-venus-england-jan2-2019-adrian-strand-300x267.jpg")
 
@@ -183,9 +187,10 @@ class Slideshow : AppCompatActivity() {
                     val gson = Gson()
                     val myPhotoList = gson.toJson(response.body())
                     Log.d("photoListResponse", "" + myPhotoList)
-                    //fullscreen_content.setText(myPhotoList)
-                    val images = intArrayOf(0, 1, 2)
-                    v_flipper = image_slide
+
+                    val gsonObj = GsonBuilder().setPrettyPrinting().create()
+                    val mediaList: MediaItems = gsonObj.fromJson(myPhotoList, object : TypeToken<MediaItems>() {}.type)
+                    Log.d("mediaList", "" + myPhotoList[0])
 /*
                     for (image in images) {
                         Log.d("typeOfimage", "" + arrImages[image])
@@ -195,7 +200,6 @@ class Slideshow : AppCompatActivity() {
                         imageView.setImageResource(0)
                     }
 */
-                    var i = 0
                     /*
                     Handler().postDelayed({
                         Log.d("typeOfimage", "" + arrImages[i])
@@ -204,14 +208,16 @@ class Slideshow : AppCompatActivity() {
                         i++
                         if(i==1) i=0
                     }, 1000)
-                    */
                     repeat(3) {
                         Log.d("typeOfimage", "" + arrImages[i])
                         Glide.with(this@Slideshow).load(arrImages[i]).into(imageView)
+                        fullscreen_content.setText(arrImages[i])
                         i++
                         if (i == 2) i = 0
                         sleep(1000)
                     }
+                    */
+                    showGuest()
                 }
                 else {
                     Log.d("photoListResponse", "Error")
@@ -223,20 +229,23 @@ class Slideshow : AppCompatActivity() {
         })
     }
 
-    // 이미지 슬라이더 구현 메서드
-    fun fllipperImages(image: String) {
-        //Glide.with(this).load(image).transition(GenericTransitionOptions.with(android.R.anim.slide_in_left)).into(imageView!!)
 
-        //v_flipper!!.addView(imageView)      // 이미지 추가
-        v_flipper!!.setFlipInterval(4000)       // 자동 이미지 슬라이드 딜레이시간(1000 당 1초)
-        v_flipper!!.setAutoStart(true)          // 자동 시작 유무 설정
-
-        // animation
-        v_flipper!!.setInAnimation(this, android.R.anim.slide_in_left)
-        v_flipper!!.setOutAnimation(this, android.R.anim.slide_out_right)
-
-        fullscreen_content.setText(image)
-        //sleep(1000)
-
+    var i = 0
+    val mDelayHandler: Handler by lazy {
+        Handler()
     }
+
+    fun waitGuest(){
+        mDelayHandler.postDelayed(::showGuest, 2000) // 10초 후에 showGuest 함수를 실행한다.
+    }
+
+    fun showGuest(){
+        Log.d("typeOfimage", "" + arrImages!![i])
+        Glide.with(this@Slideshow).load(arrImages!![i]).transition(GenericTransitionOptions.with(android.R.anim.slide_in_left)).into(imageView)
+        fullscreen_content.setText(arrImages!![i].toString())
+        i++
+        if (i == 3) i = 0
+        waitGuest() // 코드 실행뒤에 계속해서 반복하도록 작업한다.
+    }
+
 }

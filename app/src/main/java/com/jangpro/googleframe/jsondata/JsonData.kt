@@ -11,7 +11,7 @@ data class Albums(
     val coverPhotoMediaItemId:String
 )
 
-data class MyPhoto(val mediaItems:ArrayList<MediaItems>)
+data class MyPhoto(val mediaItems:List<MediaItems>)
 
 data class MediaItems(
     val id:String,
