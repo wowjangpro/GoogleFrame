@@ -5,20 +5,21 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
-import android.widget.ImageView
 import android.widget.Toast
 import android.widget.ViewFlipper
+import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.jangpro.googleframe.jsondata.MyPhoto
 import com.jangpro.googleframe.restful.GetPhotoInterface
 import com.jangpro.googleframe.restful.OkHttp3RetrofitManager
 import kotlinx.android.synthetic.main.activity_slideshow.*
-import kotlinx.android.synthetic.main.content_main.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+import java.lang.Thread.sleep
+import java.util.*
+import kotlin.concurrent.schedule
 
 
 /**
@@ -28,7 +29,7 @@ import retrofit2.Response
 class Slideshow : AppCompatActivity() {
     var access_token: String?= null
     var album_id: String?= null
-    var v_fllipper: ViewFlipper?= null
+    var v_flipper: ViewFlipper?= null
 
     private val mHideHandler = Handler()
     private val mHidePart2Runnable = Runnable {
@@ -81,6 +82,7 @@ class Slideshow : AppCompatActivity() {
         dummy_button.setOnTouchListener(mDelayHideTouchListener)
 
         getPhotoList()
+
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -89,7 +91,7 @@ class Slideshow : AppCompatActivity() {
         // Trigger the initial hide() shortly after the activity has been
         // created, to briefly hint to the user that UI controls
         // are available.
-        delayedHide(100)
+        delayedHide(1000)
     }
 
     private fun toggle() {
@@ -169,6 +171,11 @@ class Slideshow : AppCompatActivity() {
             "/v1/mediaItems:search?access_token=$access_token&key="+getString(R.string.google_api_key),
             ""+album_id
         )
+
+        var arrImages = arrayOf("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgaMt3LizQuIgGAXe5PG-8H3dlhw5M0-oGu_siUB7ofgdD3ioh",
+            "https://cdn.pixabay.com/photo/2015/07/27/19/47/turtle-863336__340.jpg",
+            "https://en.es-static.us/upl/2019/01/moon-venus-england-jan2-2019-adrian-strand-300x267.jpg")
+
         currentWeather.enqueue(object : Callback<MyPhoto> {
             override fun onResponse(call: Call<MyPhoto>?, response: Response<MyPhoto>?) {
                 Log.d("photoListResponse=====", ""+response)
@@ -177,11 +184,33 @@ class Slideshow : AppCompatActivity() {
                     val myPhotoList = gson.toJson(response.body())
                     Log.d("photoListResponse", "" + myPhotoList)
                     //fullscreen_content.setText(myPhotoList)
-                    val images = intArrayOf(1, 2, 3)
-                    v_fllipper = image_slide
-
+                    val images = intArrayOf(0, 1, 2)
+                    v_flipper = image_slide
+/*
                     for (image in images) {
-                        fllipperImages(image)
+                        Log.d("typeOfimage", "" + arrImages[image])
+                        Glide.with(this@Slideshow).load(arrImages[image]).into(imageView)
+                        fllipperImages(arrImages[image])
+                        sleep(2000)
+                        imageView.setImageResource(0)
+                    }
+*/
+                    var i = 0
+                    /*
+                    Handler().postDelayed({
+                        Log.d("typeOfimage", "" + arrImages[i])
+                        Glide.with(this@Slideshow).load(arrImages[i]).into(imageView)
+                        //fllipperImages(arrImages[i])
+                        i++
+                        if(i==1) i=0
+                    }, 1000)
+                    */
+                    repeat(3) {
+                        Log.d("typeOfimage", "" + arrImages[i])
+                        Glide.with(this@Slideshow).load(arrImages[i]).into(imageView)
+                        i++
+                        if (i == 2) i = 0
+                        sleep(1000)
                     }
                 }
                 else {
@@ -195,17 +224,19 @@ class Slideshow : AppCompatActivity() {
     }
 
     // 이미지 슬라이더 구현 메서드
-    fun fllipperImages(image: Int) {
-        val imageView = ImageView(this)
-        //imageView.setBackgroundResource(image)
-        Glide.with(this).load("https://cdn.pixabay.com/photo/2015/07/27/19/47/turtle-863336__340.jpg").into(imageView)
+    fun fllipperImages(image: String) {
+        //Glide.with(this).load(image).transition(GenericTransitionOptions.with(android.R.anim.slide_in_left)).into(imageView!!)
 
-        v_fllipper!!.addView(imageView)      // 이미지 추가
-        v_fllipper!!.setFlipInterval(4000)       // 자동 이미지 슬라이드 딜레이시간(1000 당 1초)
-        v_fllipper!!.setAutoStart(true)          // 자동 시작 유무 설정
+        //v_flipper!!.addView(imageView)      // 이미지 추가
+        v_flipper!!.setFlipInterval(4000)       // 자동 이미지 슬라이드 딜레이시간(1000 당 1초)
+        v_flipper!!.setAutoStart(true)          // 자동 시작 유무 설정
 
         // animation
-        v_fllipper!!.setInAnimation(this, android.R.anim.slide_in_left)
-        v_fllipper!!.setOutAnimation(this, android.R.anim.slide_out_right)
+        v_flipper!!.setInAnimation(this, android.R.anim.slide_in_left)
+        v_flipper!!.setOutAnimation(this, android.R.anim.slide_out_right)
+
+        fullscreen_content.setText(image)
+        //sleep(1000)
+
     }
 }

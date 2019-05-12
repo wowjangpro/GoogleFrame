@@ -2,6 +2,7 @@ package com.jangpro.googleframe
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
@@ -12,10 +13,12 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.google.android.gms.auth.GoogleAuthException
 import com.google.android.gms.auth.GoogleAuthUtil
@@ -31,16 +34,18 @@ import com.jangpro.googleframe.jsondata.Albums
 import com.jangpro.googleframe.jsondata.MyAlbum
 import com.jangpro.googleframe.restful.OkHttp3RetrofitManager
 import com.jangpro.googleframe.restful.RetrofitInterface
-import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.activity_slideshow.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
+import java.net.URL
 
 const val PREFS_FILENAME = "com.jangpro.googleframe"
 var accessToken: String?= null
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -58,6 +63,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+
     }
 
     override fun onBackPressed() {
@@ -189,7 +195,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     */
                     //레이아웃매니저 설정
                     //recyclerView.layoutManager = LinearLayoutManager(applicationContext, LinearLayout.HORIZONTAL, false)
-                    recyclerView.layoutManager = GridLayoutManager(applicationContext, 2)
+                    recyclerView.layoutManager = GridLayoutManager(applicationContext, 1)
                     recyclerView.setHasFixedSize(true)
 
                     //어답터 설정

@@ -1,17 +1,18 @@
 package com.jangpro.googleframe
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.jangpro.googleframe.jsondata.Albums
 import com.jangpro.googleframe.jsondata.MyAlbum
 import kotlinx.android.synthetic.main.content_main.view.*
+import kotlinx.android.synthetic.main.activity_slideshow.*
+
 
 class RecyclerViewAdapter(val myalbum:MyAlbum): RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
 
@@ -47,7 +48,7 @@ class RecyclerViewAdapter(val myalbum:MyAlbum): RecyclerView.Adapter<RecyclerVie
     }
 
     /*
-    companion object {
+companion object {
         fun getLaunchIntent(from: Context, album_id: String) = Intent(from, Slideshow::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             putExtra("access_token", MainActivity.)
