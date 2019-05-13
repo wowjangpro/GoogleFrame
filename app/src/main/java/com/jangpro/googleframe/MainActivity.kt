@@ -2,47 +2,37 @@ package com.jangpro.googleframe
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.navigation.NavigationView
-import androidx.core.view.GravityCompat
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager.widget.ViewPager
-import com.bumptech.glide.Glide
 import com.google.android.gms.auth.GoogleAuthException
 import com.google.android.gms.auth.GoogleAuthUtil
-import com.google.android.gms.common.Scopes
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.app_bar_main.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.Scopes
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
-import com.jangpro.googleframe.jsondata.Albums
 import com.jangpro.googleframe.jsondata.MyAlbum
 import com.jangpro.googleframe.restful.OkHttp3RetrofitManager
 import com.jangpro.googleframe.restful.RetrofitInterface
-import kotlinx.android.synthetic.main.activity_slideshow.*
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.content_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
-import java.net.URL
 
 const val PREFS_FILENAME = "com.jangpro.googleframe"
-var accessToken: String?= null
+var accessToken: String? = null
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -145,8 +135,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             AsyncTask.execute(runnable)
 
-        }
-        else {
+        } else {
             startActivity(getLaunchIntent(this))
         }
     }
@@ -156,10 +145,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
         }
-        fun getLaunchIntentAlbums(from: Context, access_token: String) = Intent(from, AlbumsActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            putExtra("access_token", access_token)
-        }
+
+        fun getLaunchIntentAlbums(from: Context, access_token: String) =
+            Intent(from, AlbumsActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                putExtra("access_token", access_token)
+            }
+
         fun getLaunchIntentPhoto(from: Context, album_id: String) = Intent(from, Slideshow::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             putExtra("access_token", accessToken)
@@ -172,14 +164,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         startActivity(getLaunchIntent(this))
     }
 
-    private fun getAlbumList(access_token:String) {
+    private fun getAlbumList(access_token: String) {
         val restClient: RetrofitInterface =
             OkHttp3RetrofitManager.getRetrofitService(RetrofitInterface::class.java)
 
         val currentWeather = restClient.requestAlbumList(access_token, getString(R.string.google_api_key))
         currentWeather.enqueue(object : Callback<MyAlbum> {
             override fun onResponse(call: Call<MyAlbum>?, response: Response<MyAlbum>?) {
-                if(response != null && response.isSuccessful) {
+                if (response != null && response.isSuccessful) {
                     val gson = Gson()
                     val myAlbumList = gson.toJson(response.body())
                     //Log.d("albumListResponse", response.body().toString())
@@ -211,8 +203,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 }
             }
+
             override fun onFailure(call: Call<MyAlbum>?, t: Throwable?) {
-                Log.d("errorResponse", ""+t.toString())
+                Log.d("errorResponse", "" + t.toString())
             }
         })
     }

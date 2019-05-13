@@ -1,20 +1,17 @@
 package com.jangpro.googleframe
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.jangpro.googleframe.jsondata.Albums
 import com.jangpro.googleframe.jsondata.MyAlbum
-import kotlinx.android.synthetic.main.content_main.view.*
-import kotlinx.android.synthetic.main.activity_slideshow.*
+import kotlinx.android.synthetic.main.card_item.view.*
 
 
-class RecyclerViewAdapter(val myalbum:MyAlbum): RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
+class RecyclerViewAdapter(val myalbum: MyAlbum) : RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
 
     //아이템의 갯수
     override fun getItemCount(): Int {
@@ -22,7 +19,7 @@ class RecyclerViewAdapter(val myalbum:MyAlbum): RecyclerView.Adapter<RecyclerVie
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewAdapter.ViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.content_main, parent, false)
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.card_item, parent, false)
         return ViewHolder(v)
     }
 
@@ -31,8 +28,8 @@ class RecyclerViewAdapter(val myalbum:MyAlbum): RecyclerView.Adapter<RecyclerVie
         holder.bindItems(myalbum.albums.get(position))
     }
 
-    class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        fun bindItems(data : Albums){
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        fun bindItems(data: Albums) {
             //이미지표시
             Glide.with(itemView.context).load(data.coverPhotoBaseUrl).into(itemView.imageView_photo)
             itemView.textView_name.text = data.title
