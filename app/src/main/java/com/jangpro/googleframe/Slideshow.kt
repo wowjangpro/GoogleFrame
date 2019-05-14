@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Toast
 import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
+import com.google.android.gms.common.api.ApiException
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -30,8 +31,7 @@ import java.time.format.DateTimeFormatter
 class Slideshow : AppCompatActivity() {
     var access_token: String?= null
     var album_id: String?= null
-    var arrImages: Array<Any>?= null
-    var mediaItems: List<Any>?= null
+    var mediaItems: List<MediaItems>?= null
 
     private val mHideHandler = Handler()
     private val mHidePart2Runnable = Runnable {
@@ -174,10 +174,6 @@ class Slideshow : AppCompatActivity() {
             ""+album_id
         )
 
-        arrImages = arrayOf("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgaMt3LizQuIgGAXe5PG-8H3dlhw5M0-oGu_siUB7ofgdD3ioh",
-            "https://cdn.pixabay.com/photo/2015/07/27/19/47/turtle-863336__340.jpg",
-            "https://en.es-static.us/upl/2019/01/moon-venus-england-jan2-2019-adrian-strand-300x267.jpg")
-
         currentWeather.enqueue(object : Callback<MyPhoto> {
             override fun onResponse(call: Call<MyPhoto>?, response: Response<MyPhoto>?) {
                 Log.d("photoListResponse=====", ""+response)
@@ -243,15 +239,25 @@ class Slideshow : AppCompatActivity() {
         var createDate = (mediaItems as List<MediaItems>)[i].mediaMetadata.creationTime
         Log.d("mediaList", "" + itemCnt)
         Log.d("mediaList", "" + (mediaItems as List<MediaItems>)[i].baseUrl)
-        Glide.with(this@Slideshow).load((mediaItems as List<MediaItems>)[i].baseUrl).transition(GenericTransitionOptions.with(android.R.anim.slide_in_left)).into(imageView)
+        try {
+            Glide.with(this@Slideshow).load((mediaItems as List<MediaItems>)[i].baseUrl)
+                .transition(GenericTransitionOptions.with(android.R.anim.slide_in_left)).into(imageView)
 
-        var datenow = LocalDate.parse(createDate.substring(0,10), DateTimeFormatter.ISO_DATE)
+            var datenow = LocalDate.parse(createDate.substring(0, 10), DateTimeFormatter.ISO_DATE)
 
 
-        fullscreen_content.setText(datenow.toString()+"  ")
-        i++
-        if (i == itemCnt) i = 0
-        waitGuest() // 코드 실행뒤에 계속해서 반복하도록 작업한다.
+            fullscreen_content.setText(datenow.toString())
+            i++
+            if (i == itemCnt) i = 0
+            waitGuest() // 코드 실행뒤에 계속해서 반복하도록 작업한다.
+        }
+        catch  (e: ApiException) {
+            Toast.makeText(this, "Exit slideview", Toast.LENGTH_LONG).show()
+        }
     }
 
+    override fun onBackPressed() {
+        Log.d("onBackPressed", "Click!")
+        startActivity(LoginActivity.getLaunchIntent(this))
+    }
 }

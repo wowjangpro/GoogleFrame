@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -56,11 +57,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
+    private var first_time : Long = 0
+    private var second_time : Long = 0
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+            second_time = System.currentTimeMillis()
+            if(second_time - first_time < 2000){
+                super.onBackPressed()
+                finish()
+            }else Toast.makeText(this,"뒤로가기 버튼을 한 번 더 누르시면 종료!", Toast.LENGTH_SHORT).show()
+            first_time = System.currentTimeMillis()
         }
     }
 

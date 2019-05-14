@@ -1,5 +1,6 @@
 package com.jangpro.googleframe
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,12 +36,14 @@ class RecyclerViewAdapter(val myalbum: MyAlbum) : RecyclerView.Adapter<RecyclerV
             itemView.textView_name.text = data.title
             itemView.textView_email.text = data.mediaItemsCount
             //itemView.imageView_photo.setImageBitmap(data.photo)
-
             //각각의 아이템 클릭시
             itemView.setOnClickListener({
+                Log.d("cardviewClick", "Click!")
                 Toast.makeText(itemView.context, "아이템 '${data.title}'를 클릭했습니다.", Toast.LENGTH_LONG).show()
                 itemView.getContext().startActivity(MainActivity.getLaunchIntentPhoto(itemView.context, data.id));
             })
+
+
         }
     }
 
