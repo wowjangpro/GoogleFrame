@@ -218,3 +218,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
     }
 }
+
+class JsonObject() {
+
+}

@@ -12,11 +12,12 @@ import com.google.android.gms.common.api.ApiException
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.jangpro.googleframe.jsondata.MediaItems
-import com.jangpro.googleframe.jsondata.MyPhoto
+import com.jangpro.googleframe.jsondata.*
 import com.jangpro.googleframe.restful.GetPhotoInterface
 import com.jangpro.googleframe.restful.OkHttp3RetrofitManager
 import kotlinx.android.synthetic.main.activity_slideshow.*
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -169,9 +170,18 @@ class Slideshow : AppCompatActivity() {
         val restClient: GetPhotoInterface =
             OkHttp3RetrofitManager.getRetrofitService(GetPhotoInterface::class.java)
 
+        var searchString = SearchString(
+            albumId = album_id.toString(),
+            pageSize = 100,
+            pageToken = ""
+        )
+        val gsonSearchString = Gson().toJson(searchString)
+        val searchStringBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), gsonSearchString)
+        Log.d("myAlbumsObj", "" + gsonSearchString)
+
         val currentWeather = restClient.requestPhotoList(
             "/v1/mediaItems:search?access_token=$access_token&key="+getString(R.string.google_api_key),
-            ""+album_id
+            searchStringBody
         )
 
         currentWeather.enqueue(object : Callback<MyPhoto> {
@@ -240,16 +250,18 @@ class Slideshow : AppCompatActivity() {
         Log.d("mediaList", "" + itemCnt)
         Log.d("mediaList", "" + (mediaItems as List<MediaItems>)[i].baseUrl)
         try {
-            Glide.with(this@Slideshow).load((mediaItems as List<MediaItems>)[i].baseUrl)
-                .transition(GenericTransitionOptions.with(android.R.anim.slide_in_left)).into(imageView)
+            if (!this.isFinishing ()) {
+                Glide.with(this@Slideshow).load((mediaItems as List<MediaItems>)[i].baseUrl)
+                    .transition(GenericTransitionOptions.with(android.R.anim.slide_in_left)).into(imageView)
 
-            var datenow = LocalDate.parse(createDate.substring(0, 10), DateTimeFormatter.ISO_DATE)
+                var datenow = LocalDate.parse(createDate.substring(0, 10), DateTimeFormatter.ISO_DATE)
 
 
-            fullscreen_content.setText(datenow.toString())
-            i++
-            if (i == itemCnt) i = 0
-            waitGuest() // 코드 실행뒤에 계속해서 반복하도록 작업한다.
+                fullscreen_content.setText(datenow.toString())
+                i++
+                if (i == itemCnt) i = 0
+                waitGuest() // 코드 실행뒤에 계속해서 반복하도록 작업한다.
+            }
         }
         catch  (e: ApiException) {
             Toast.makeText(this, "Exit slideview", Toast.LENGTH_LONG).show()

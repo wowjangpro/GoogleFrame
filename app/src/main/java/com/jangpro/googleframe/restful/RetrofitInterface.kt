@@ -1,5 +1,6 @@
 package com.jangpro.googleframe.restful
 
+import com.jangpro.googleframe.JsonObject
 import com.jangpro.googleframe.jsondata.MyAlbum
 import com.jangpro.googleframe.jsondata.MyPhoto
 import okhttp3.RequestBody
@@ -24,10 +25,13 @@ interface GetPhotoInterface {
 }
 */
 interface GetPhotoInterface {
-    @FormUrlEncoded
+    //@FormUrlEncoded
     @POST()
     fun requestPhotoList(
         @Url url: String,
-        @Field("albumId") albumid:String
+        //@Field("albumId") albumid:String
+        //@Field("pageSize") pagesize:Int
+        @Body request: RequestBody
+
     ) : Call<MyPhoto>
 }
