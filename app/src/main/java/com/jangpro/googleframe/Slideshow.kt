@@ -196,32 +196,6 @@ class Slideshow : AppCompatActivity() {
                     val mediaList: MyPhoto = gsonObj.fromJson(myPhotoList, object : TypeToken<MyPhoto>() {}.type)
                     mediaItems = mediaList.mediaItems
                     Log.d("mediaList", "" + (mediaItems as List<MediaItems>)[0].productUrl)
-/*
-                    for (image in images) {
-                        Log.d("typeOfimage", "" + arrImages[image])
-                        Glide.with(this@Slideshow).load(arrImages[image]).into(imageView)
-                        fllipperImages(arrImages[image])
-                        sleep(2000)
-                        imageView.setImageResource(0)
-                    }
-*/
-                    /*
-                    Handler().postDelayed({
-                        Log.d("typeOfimage", "" + arrImages[i])
-                        Glide.with(this@Slideshow).load(arrImages[i]).into(imageView)
-                        //fllipperImages(arrImages[i])
-                        i++
-                        if(i==1) i=0
-                    }, 1000)
-                    repeat(3) {
-                        Log.d("typeOfimage", "" + arrImages[i])
-                        Glide.with(this@Slideshow).load(arrImages[i]).into(imageView)
-                        fullscreen_content.setText(arrImages[i])
-                        i++
-                        if (i == 2) i = 0
-                        sleep(1000)
-                    }
-                    */
                     showGuest()
                 }
                 else {
