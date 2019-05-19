@@ -23,7 +23,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
+import com.jangpro.googleframe.GetPhotos
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -84,8 +84,7 @@ class Slideshow : AppCompatActivity() {
         // while interacting with the UI.
         dummy_button.setOnTouchListener(mDelayHideTouchListener)
 
-        getPhotoList()
-
+        //getPhotoList()
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -156,7 +155,7 @@ class Slideshow : AppCompatActivity() {
          */
         private val UI_ANIMATION_DELAY = 300
     }
-
+/*
     private fun getPhotoList() {
         if (intent.hasExtra("album_id")) {
             access_token = intent.getStringExtra("access_token")
@@ -207,7 +206,7 @@ class Slideshow : AppCompatActivity() {
             }
         })
     }
-
+*/
 
     var i = 0
     val mDelayHandler: Handler by lazy {

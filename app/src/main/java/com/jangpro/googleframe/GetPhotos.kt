@@ -1,5 +1,6 @@
 package com.jangpro.googleframe
 
+import android.content.res.Resources
 import android.util.Log
 import android.widget.Toast
 import com.google.gson.Gson
@@ -18,17 +19,17 @@ class GetPhotos(var access_token:String?, var album_id: String?) {
     //var access_token: String?= null
     //var album_id: String?= null
     var mediaItems: List<MediaItems>?= null
-
+    /*
     constructor(access_token: String?, album_id: String?, mediaItems: List<MediaItems>?) : this(access_token, album_id){
-        this.mediaItems = mediaItems
+        //this.mediaItems = mediaItems
     }
-
-    fun getPhotoList() {
-        if (!album_id) {
+    */
+    internal fun getPhotoList() {
+        if (album_id == "") {
             Log.d("album_id", "" + access_token)
             Log.d("album_id", "" + album_id)
         } else {
-            Toast.makeText(this, "전달된 이름이 없습니다", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "전달된 이름이 없습니다", Toast.LENGTH_SHORT).show()
         }
 
         val restClient: GetPhotoInterface =
@@ -44,7 +45,7 @@ class GetPhotos(var access_token:String?, var album_id: String?) {
         Log.d("myAlbumsObj", "" + gsonSearchString)
 
         val currentWeather = restClient.requestPhotoList(
-            "/v1/mediaItems:search?access_token=$access_token&key="+getString(R.string.google_api_key),
+            "/v1/mediaItems:search?access_token=$access_token&key="+ Resources.getSystem().getString(R.string.google_api_key),
             searchStringBody
         )
 
@@ -60,7 +61,8 @@ class GetPhotos(var access_token:String?, var album_id: String?) {
                     val mediaList: MyPhoto = gsonObj.fromJson(myPhotoList, object : TypeToken<MyPhoto>() {}.type)
                     mediaItems = mediaList.mediaItems
                     Log.d("mediaList", "" + (mediaItems as List<MediaItems>)[0].productUrl)
-                    showGuest()
+                    //showGuest()
+                    Slideshow::showGuest()
                 }
                 else {
                     Log.d("photoListResponse", "Error")
