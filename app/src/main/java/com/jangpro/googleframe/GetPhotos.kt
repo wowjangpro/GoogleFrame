@@ -1,6 +1,8 @@
 package com.jangpro.googleframe
 
+import android.content.Context
 import android.content.res.Resources
+import android.content.res.Resources.getSystem
 import android.util.Log
 import android.widget.Toast
 import com.google.gson.Gson
@@ -26,9 +28,9 @@ class GetPhotos {
         //this.mediaItems = mediaItems
     }
     */
-    internal fun getPhotoList(access_token:String?,album_id: String?) {
+    internal fun getPhotoList(context: Context, access_token:String?, album_id: String?) {
         if (album_id == "") {
-            Log.d("album_id", "" + access_token)
+            Log.d("access_token", "" + access_token)
             Log.d("album_id", "" + album_id)
         } else {
             //Toast.makeText(this, "전달된 이름이 없습니다", Toast.LENGTH_SHORT).show()
@@ -47,7 +49,8 @@ class GetPhotos {
         Log.d("myAlbumsObj", "" + gsonSearchString)
 
         val currentWeather = restClient.requestPhotoList(
-            "/v1/mediaItems:search?access_token=$access_token&key="+ access_token, searchStringBody
+            "/v1/mediaItems:search?access_token=$access_token&key="+context.getString(R.string.google_api_key),
+            searchStringBody
         )
 
         currentWeather.enqueue(object : Callback<MyPhoto> {
@@ -61,11 +64,10 @@ class GetPhotos {
                     val gsonObj = GsonBuilder().setPrettyPrinting().create()
                     val mediaList: MyPhoto = gsonObj.fromJson(myPhotoList, object : TypeToken<MyPhoto>() {}.type)
                     mediaItems = mediaList.mediaItems
+                    Log.d("mediaList", "" + mediaItems)
 
                     returnInterface?.MyPhotoCallback(mediaItems as List<MediaItems>)
-                    Log.d("mediaList", "" + (mediaItems as List<MediaItems>)[0].productUrl)
-                    //showGuest()
-//                    Slideshow::showGuest()
+                    //Log.d("mediaList", "" + (mediaItems as List<MediaItems>))
                 }
                 else {
                     Log.d("photoListResponse", "Error")

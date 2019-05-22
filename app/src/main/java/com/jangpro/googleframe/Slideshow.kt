@@ -1,6 +1,5 @@
 package com.jangpro.googleframe
 
-import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -80,14 +79,16 @@ class Slideshow : AppCompatActivity() {
 
 
         getPhotos = GetPhotos()
+        access_token = intent.getStringExtra("access_token")
+        album_id = intent.getStringExtra("album_id")
 
         getPhotos.apply {
-            access_token = getString(R.string.google_api_key)
-            getPhotoList(access_token, album_id).run {
+            getPhotoList(this@Slideshow, access_token, album_id).run {
+                Log.d("access_token=", "" + access_token)
                 returnInterface = object : ReturnInterface {
                     override fun MyPhotoCallback(list: List<MediaItems>) {
-                        Log.d("mediaList", "" + (mediaItems as List<MediaItems>)[0].productUrl)
                         mediaItems = list
+                        Log.d("mediaList-productUrl", "" + list[0].productUrl)
                         showGuest()
                     }
                 }
@@ -226,17 +227,17 @@ class Slideshow : AppCompatActivity() {
     }
 
     fun showGuest() {
+        Log.d("mediaList-show", "" + mediaItems)
         var itemCnt = (mediaItems as List<MediaItems>).count()
         var createDate = (mediaItems as List<MediaItems>)[i].mediaMetadata.creationTime
-        Log.d("mediaList", "" + itemCnt)
-        Log.d("mediaList", "" + (mediaItems as List<MediaItems>)[i].baseUrl)
+        Log.d("mediaList-cnt", "" + itemCnt)
+        Log.d("mediaList-baseUrl", "" + (mediaItems as List<MediaItems>)[i].baseUrl)
         try {
             if (!this.isFinishing()) {
                 Glide.with(this@Slideshow).load((mediaItems as List<MediaItems>)[i].baseUrl)
                     .transition(GenericTransitionOptions.with(android.R.anim.slide_in_left)).into(imageView)
 
                 var datenow = LocalDate.parse(createDate.substring(0, 10), DateTimeFormatter.ISO_DATE)
-
 
                 fullscreen_content.setText(datenow.toString())
                 i++
