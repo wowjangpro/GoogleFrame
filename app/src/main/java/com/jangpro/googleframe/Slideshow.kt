@@ -1,38 +1,30 @@
 package com.jangpro.googleframe
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
 import com.google.android.gms.common.api.ApiException
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
-import com.jangpro.googleframe.jsondata.*
-import com.jangpro.googleframe.restful.GetPhotoInterface
-import com.jangpro.googleframe.restful.OkHttp3RetrofitManager
+import com.jangpro.googleframe.jsondata.MediaItems
 import kotlinx.android.synthetic.main.activity_slideshow.*
-import okhttp3.MediaType
-import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import com.jangpro.googleframe.GetPhotos
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
 class Slideshow : AppCompatActivity() {
-    var access_token: String?= null
-    var album_id: String?= null
-    var mediaItems: List<MediaItems>?= null
+    var access_token: String? = null
+    var album_id: String? = null
+    var mediaItems: List<MediaItems>? = null
+
+    lateinit var getPhotos: GetPhotos
 
     private val mHideHandler = Handler()
     private val mHidePart2Runnable = Runnable {
@@ -85,6 +77,22 @@ class Slideshow : AppCompatActivity() {
         dummy_button.setOnTouchListener(mDelayHideTouchListener)
 
         //getPhotoList()
+
+
+        getPhotos = GetPhotos()
+
+        getPhotos.apply {
+            access_token = getString(R.string.google_api_key)
+            getPhotoList(access_token, album_id).run {
+                returnInterface = object : ReturnInterface {
+                    override fun MyPhotoCallback(list: List<MediaItems>) {
+                        Log.d("mediaList", "" + (mediaItems as List<MediaItems>)[0].productUrl)
+                        mediaItems = list
+                        showGuest()
+                    }
+                }
+            }
+        }
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -213,17 +221,17 @@ class Slideshow : AppCompatActivity() {
         Handler()
     }
 
-    fun waitGuest(){
+    fun waitGuest() {
         mDelayHandler.postDelayed(::showGuest, 10000) // 10초 후에 showGuest 함수를 실행한다.
     }
 
-    fun showGuest(){
+    fun showGuest() {
         var itemCnt = (mediaItems as List<MediaItems>).count()
         var createDate = (mediaItems as List<MediaItems>)[i].mediaMetadata.creationTime
         Log.d("mediaList", "" + itemCnt)
         Log.d("mediaList", "" + (mediaItems as List<MediaItems>)[i].baseUrl)
         try {
-            if (!this.isFinishing ()) {
+            if (!this.isFinishing()) {
                 Glide.with(this@Slideshow).load((mediaItems as List<MediaItems>)[i].baseUrl)
                     .transition(GenericTransitionOptions.with(android.R.anim.slide_in_left)).into(imageView)
 
@@ -235,8 +243,7 @@ class Slideshow : AppCompatActivity() {
                 if (i == itemCnt) i = 0
                 waitGuest() // 코드 실행뒤에 계속해서 반복하도록 작업한다.
             }
-        }
-        catch  (e: ApiException) {
+        } catch (e: ApiException) {
             Toast.makeText(this, "Exit slideview", Toast.LENGTH_LONG).show()
         }
     }

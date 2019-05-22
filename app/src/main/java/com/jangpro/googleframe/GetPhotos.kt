@@ -15,16 +15,18 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class GetPhotos(var access_token:String?, var album_id: String?) {
+class GetPhotos {
     //var access_token: String?= null
     //var album_id: String?= null
     var mediaItems: List<MediaItems>?= null
+
+    var returnInterface:ReturnInterface? = null
     /*
     constructor(access_token: String?, album_id: String?, mediaItems: List<MediaItems>?) : this(access_token, album_id){
         //this.mediaItems = mediaItems
     }
     */
-    internal fun getPhotoList() {
+    internal fun getPhotoList(access_token:String?,album_id: String?) {
         if (album_id == "") {
             Log.d("album_id", "" + access_token)
             Log.d("album_id", "" + album_id)
@@ -45,8 +47,7 @@ class GetPhotos(var access_token:String?, var album_id: String?) {
         Log.d("myAlbumsObj", "" + gsonSearchString)
 
         val currentWeather = restClient.requestPhotoList(
-            "/v1/mediaItems:search?access_token=$access_token&key="+ Resources.getSystem().getString(R.string.google_api_key),
-            searchStringBody
+            "/v1/mediaItems:search?access_token=$access_token&key="+ access_token, searchStringBody
         )
 
         currentWeather.enqueue(object : Callback<MyPhoto> {
@@ -60,9 +61,11 @@ class GetPhotos(var access_token:String?, var album_id: String?) {
                     val gsonObj = GsonBuilder().setPrettyPrinting().create()
                     val mediaList: MyPhoto = gsonObj.fromJson(myPhotoList, object : TypeToken<MyPhoto>() {}.type)
                     mediaItems = mediaList.mediaItems
+
+                    returnInterface?.MyPhotoCallback(mediaItems as List<MediaItems>)
                     Log.d("mediaList", "" + (mediaItems as List<MediaItems>)[0].productUrl)
                     //showGuest()
-                    Slideshow::showGuest()
+//                    Slideshow::showGuest()
                 }
                 else {
                     Log.d("photoListResponse", "Error")
