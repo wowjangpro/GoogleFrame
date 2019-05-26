@@ -1,6 +1,5 @@
 package com.jangpro.googleframe.restful
 
-import com.jangpro.googleframe.JsonObject
 import com.jangpro.googleframe.jsondata.MyAlbum
 import com.jangpro.googleframe.jsondata.MyPhoto
 import okhttp3.RequestBody
@@ -34,4 +33,8 @@ interface GetPhotoInterface {
         @Body request: RequestBody
 
     ) : Call<MyPhoto>
+}
+
+interface ReturnInterface {
+    fun MyPhotoCallback(list: MyPhoto)
 }

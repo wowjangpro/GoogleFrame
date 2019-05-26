@@ -10,7 +10,7 @@ data class Albums(
     val coverPhotoMediaItemId:String
 )
 
-data class MyPhoto(val mediaItems:List<MediaItems>)
+data class MyPhoto(val mediaItems:List<MediaItems>, val nextPageToken:String)
 data class MediaItems(
     val id:String,
     val productUrl:String,

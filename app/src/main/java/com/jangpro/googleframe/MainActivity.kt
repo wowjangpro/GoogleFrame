@@ -36,6 +36,7 @@ const val PREFS_FILENAME = "com.jangpro.googleframe"
 var accessToken: String? = null
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    lateinit var getAccessToken: GetAccessToken
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,6 +126,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onResume() {
         super.onResume()
+        getAccessToken = GetAccessToken()
+        getAlbumList(accessToken.toString())
+        getAccessToken.apply {
+            getAccessToken(this@MainActivity).run {
+                Log.d("Token-onresume", "accessToken:$accessToken") //accessToken:ya29.Gl...
+                getAlbumList(accessToken.toString())
+            }
+        }
+        /*
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
 
@@ -146,6 +156,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             startActivity(getLaunchIntent(this))
         }
+        */
     }
 
     companion object {
@@ -217,8 +228,4 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         })
     }
-}
-
-class JsonObject() {
-
 }
