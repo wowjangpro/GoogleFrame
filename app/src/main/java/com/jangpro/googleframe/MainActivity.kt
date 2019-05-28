@@ -130,7 +130,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onResume() {
         super.onResume()
-        runAlbum()
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            runAlbum()
+        } else {
+            startActivity(getLaunchIntent(this))
+        }
         /*
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {

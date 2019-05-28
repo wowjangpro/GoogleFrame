@@ -210,6 +210,7 @@ class Slideshow : AppCompatActivity() {
 */
 
     fun callPhotoData(album_id: String?, page_token: String?) = CoroutineScope(Dispatchers.Main).launch {
+        i = 0
         var access_token = ""
         withContext(Dispatchers.IO) {
             access_token = getAccessToken.getAccessToken(this@Slideshow)
@@ -278,7 +279,7 @@ class Slideshow : AppCompatActivity() {
     }
 
     fun waitGuest() {
-        mDelayHandler.postDelayed(::showGuest, 3000) // 10초 후에 showGuest 함수를 실행한다.
+        mDelayHandler.postDelayed(::showGuest, 2000) // 10초 후에 showGuest 함수를 실행한다.
     }
 
     var i = 0
