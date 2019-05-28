@@ -36,7 +36,7 @@ class GetPhotos {
 
         var searchString = SearchString(
             albumId = album_id.toString(),
-            pageSize = 50,
+            pageSize = 3,
             pageToken = page_token!!
         )
         val gsonSearchString = Gson().toJson(searchString)

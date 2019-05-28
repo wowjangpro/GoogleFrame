@@ -27,16 +27,20 @@ import com.jangpro.googleframe.restful.RetrofitInterface
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
 
 const val PREFS_FILENAME = "com.jangpro.googleframe"
-var accessToken: String? = null
+//var accessToken: String? = null
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-    lateinit var getAccessToken: GetAccessToken
+    private var getAccessToken = GetAccessToken()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,17 +62,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
-    private var first_time : Long = 0
-    private var second_time : Long = 0
+    private var first_time: Long = 0
+    private var second_time: Long = 0
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else {
             second_time = System.currentTimeMillis()
-            if(second_time - first_time < 2000){
+            if (second_time - first_time < 2000) {
                 super.onBackPressed()
                 finish()
-            }else Toast.makeText(this,"뒤로가기 버튼을 한 번 더 누르시면 종료!", Toast.LENGTH_SHORT).show()
+            } else Toast.makeText(this, "뒤로가기 버튼을 한 번 더 누르시면 종료!", Toast.LENGTH_SHORT).show()
             first_time = System.currentTimeMillis()
         }
     }
@@ -126,14 +130,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onResume() {
         super.onResume()
-        getAccessToken = GetAccessToken()
-        getAlbumList(accessToken.toString())
-        getAccessToken.apply {
-            getAccessToken(this@MainActivity).run {
-                Log.d("Token-onresume", "accessToken:$accessToken") //accessToken:ya29.Gl...
-                getAlbumList(accessToken.toString())
-            }
-        }
+        runAlbum()
         /*
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
@@ -159,6 +156,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         */
     }
 
+    private fun runAlbum() = CoroutineScope(Dispatchers.Main).launch {
+        var retAccessToken = ""
+        withContext(Dispatchers.IO) {
+            retAccessToken = getAccessToken.getAccessToken(this@MainActivity)
+
+        }.run {
+            retAccessToken.let {
+                Log.d("Token-onresume", "accessToken:$retAccessToken") //accessToken:ya29.Gl...
+                getAlbumList(retAccessToken)
+            }
+        }
+    }
+
     companion object {
         fun getLaunchIntent(from: Context) = Intent(from, LoginActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -173,7 +183,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         fun getLaunchIntentPhoto(from: Context, album_id: String) = Intent(from, Slideshow::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            putExtra("access_token", accessToken)
+            //putExtra("access_token", accessToken)
             putExtra("album_id", album_id)
         }
     }

@@ -13,6 +13,10 @@ import com.jangpro.googleframe.jsondata.MediaItems
 import com.jangpro.googleframe.jsondata.MyPhoto
 import com.jangpro.googleframe.restful.ReturnInterface
 import kotlinx.android.synthetic.main.activity_slideshow.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -27,8 +31,8 @@ class Slideshow : AppCompatActivity() {
     var isFirst = true
     private var mediaItems: List<MediaItems>? = null
     private var pageToken: String? = null
-    lateinit var getPhotos: GetPhotos
-    lateinit var getAccessToken: GetAccessToken
+    private var getPhotos = GetPhotos()
+    private var getAccessToken = GetAccessToken()
 
     private val mHideHandler = Handler()
     private val mHidePart2Runnable = Runnable {
@@ -80,9 +84,8 @@ class Slideshow : AppCompatActivity() {
         // while interacting with the UI.
         dummy_button.setOnTouchListener(mDelayHideTouchListener)
 
-        accessToken = intent.getStringExtra("access_token")
         albumId = intent.getStringExtra("album_id")
-        callPhotoData(accessToken, albumId, "")
+        callPhotoData(albumId, "")
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -206,10 +209,41 @@ class Slideshow : AppCompatActivity() {
     }
 */
 
+    fun callPhotoData(album_id: String?, page_token: String?) = CoroutineScope(Dispatchers.Main).launch {
+        var access_token = ""
+        withContext(Dispatchers.IO) {
+            access_token = getAccessToken.getAccessToken(this@Slideshow)
+
+        }.run {
+            access_token.let {
+                Log.d("Token-onresume", "accessToken:$access_token") //accessToken:ya29.Gl...
+                getPhotos.apply {
+                    getPhotoList(this@Slideshow, access_token, album_id, page_token).run {
+                        mediaItems = null
+                        pageToken = null
+                        Log.d("access_token=", "" + access_token)
+                        returnInterface = object : ReturnInterface {
+                            override fun MyPhotoCallback(list: MyPhoto) {
+                                mediaItems = list.mediaItems
+                                pageToken = list.nextPageToken
+                                Log.d("mediaList", "" + list)
+                                Log.d("mediaList-nextPageToken", "" + list.nextPageToken)
+                                if(isFirst) {
+                                    showGuest()
+                                    isFirst = false
+                                }
+                                //else waitGuest()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    /*
     fun callPhotoData(access_token: String?, album_id: String?, page_token: String?) {
         i = 0
         getPhotos = GetPhotos()
-        getAccessToken = GetAccessToken()
 
         getAccessToken.apply {
             getAccessToken(this@Slideshow).run {
@@ -237,13 +271,14 @@ class Slideshow : AppCompatActivity() {
             }
         }
     }
+*/
 
     val mDelayHandler: Handler by lazy {
         Handler()
     }
 
     fun waitGuest() {
-        mDelayHandler.postDelayed(::showGuest, 2000) // 10초 후에 showGuest 함수를 실행한다.
+        mDelayHandler.postDelayed(::showGuest, 3000) // 10초 후에 showGuest 함수를 실행한다.
     }
 
     var i = 0
@@ -267,7 +302,7 @@ class Slideshow : AppCompatActivity() {
                 if (i == itemCnt) {
                     //mDelayHandler.removeCallbacksAndMessages(null)
                     if(pageToken == null) pageToken = ""
-                    callPhotoData(accessToken, albumId, pageToken)
+                    callPhotoData(albumId, pageToken)
                 }
                 //else {
                     waitGuest() // 코드 실행뒤에 계속해서 반복하도록 작업한다.
