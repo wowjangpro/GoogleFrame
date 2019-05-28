@@ -13,12 +13,8 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Main3Activity">
-        </activity>
-        <activity android:name=".MainActivity2">
-        </activity>
         <activity
-                android:name=".Slideshow"
+                android:name=".SlideShow"
                 android:configChanges="orientation|keyboardHidden|screenSize"
                 android:label="@string/title_activity_slideshow"
                 android:theme="@style/FullscreenTheme">
@@ -34,8 +30,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoginActivity">
-        </activity>
-        <activity android:name=".AlbumsActivity">
         </activity>
     </application>
 

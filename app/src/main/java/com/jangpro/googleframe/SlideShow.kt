@@ -25,10 +25,9 @@ import java.util.*
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-class Slideshow : AppCompatActivity() {
-    var accessToken: String? = null
-    var albumId: String? = null
-    var isFirst = true
+class SlideShow : AppCompatActivity() {
+    private var albumId: String? = null
+    private var isFirst = true
     private var mediaItems: List<MediaItems>? = null
     private var pageToken: String? = null
     private var getPhotos = GetPhotos()
@@ -213,13 +212,13 @@ class Slideshow : AppCompatActivity() {
         i = 0
         var access_token = ""
         withContext(Dispatchers.IO) {
-            access_token = getAccessToken.getAccessToken(this@Slideshow)
+            access_token = getAccessToken.getAccessToken(this@SlideShow)
 
         }.run {
             access_token.let {
                 Log.d("Token-onresume", "accessToken:$access_token") //accessToken:ya29.Gl...
                 getPhotos.apply {
-                    getPhotoList(this@Slideshow, access_token, album_id, page_token).run {
+                    getPhotoList(this@SlideShow, access_token, album_id, page_token).run {
                         mediaItems = null
                         pageToken = null
                         Log.d("access_token=", "" + access_token)
@@ -233,7 +232,7 @@ class Slideshow : AppCompatActivity() {
                                     showGuest()
                                     isFirst = false
                                 }
-                                //else waitGuest()
+                                else waitGuest()
                             }
                         }
                     }
@@ -279,21 +278,21 @@ class Slideshow : AppCompatActivity() {
     }
 
     fun waitGuest() {
-        mDelayHandler.postDelayed(::showGuest, 2000) // 10초 후에 showGuest 함수를 실행한다.
+        mDelayHandler.postDelayed(::showGuest, 10000) // 10초 후에 showGuest 함수를 실행한다.
     }
 
     var i = 0
     fun showGuest() {
         Log.d("mediaList-show", "" + mediaItems)
-        var itemCnt = (mediaItems as List<MediaItems>).count()
-        var createDate = (mediaItems as List<MediaItems>)[i].mediaMetadata.creationTime
-        Log.d("mediaList-cnt", "" + itemCnt)
-        Log.d("mediaList-baseUrl", "" + (mediaItems as List<MediaItems>)[i].baseUrl)
         try {
+            var itemCnt = (mediaItems as List<MediaItems>).count()
+            var createDate = (mediaItems as List<MediaItems>)[i].mediaMetadata.creationTime
+            Log.d("mediaList-cnt", "" + itemCnt)
+            Log.d("mediaList-baseUrl", "" + (mediaItems as List<MediaItems>)[i].baseUrl)
             if (!this.isFinishing()) {
                 val dt = Date()
-                Log.d("DATE", dt.toString())
-                Glide.with(this@Slideshow).load((mediaItems as List<MediaItems>)[i].baseUrl)
+                Log.d("SHOWDATE", dt.toString())
+                Glide.with(this@SlideShow).load((mediaItems as List<MediaItems>)[i].baseUrl)
                     .transition(GenericTransitionOptions.with(android.R.anim.slide_in_left)).into(imageView)
 
                 var datenow = LocalDate.parse(createDate.substring(0, 10), DateTimeFormatter.ISO_DATE)
@@ -301,13 +300,13 @@ class Slideshow : AppCompatActivity() {
                 fullscreen_content.setText(datenow.toString())
                 i++
                 if (i == itemCnt) {
-                    //mDelayHandler.removeCallbacksAndMessages(null)
+                    mDelayHandler.removeCallbacksAndMessages(null)
                     if(pageToken == null) pageToken = ""
                     callPhotoData(albumId, pageToken)
                 }
-                //else {
+                else {
                     waitGuest() // 코드 실행뒤에 계속해서 반복하도록 작업한다.
-                //}
+                }
             }
         } catch (e: ApiException) {
             Toast.makeText(this, "Exit slideview", Toast.LENGTH_LONG).show()

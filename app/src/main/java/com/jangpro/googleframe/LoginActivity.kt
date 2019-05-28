@@ -93,6 +93,7 @@ class LoginActivity : AppCompatActivity() {
                             prefs = this.getSharedPreferences(PREFS_FILENAME, 0)
                             val editor = prefs!!.edit()
                             editor.putString("access_token", accessToken)
+                            editor.putString("user_email", personEmail)
                             editor.apply()
                             editor.commit()
                         } catch (e: IOException) {

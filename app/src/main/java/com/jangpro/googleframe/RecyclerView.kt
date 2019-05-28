@@ -39,7 +39,7 @@ class RecyclerViewAdapter(val myalbum: MyAlbum) : RecyclerView.Adapter<RecyclerV
             //각각의 아이템 클릭시
             itemView.setOnClickListener({
                 Log.d("cardviewClick", "Click!")
-                Toast.makeText(itemView.context, "아이템 '${data.title}'를 클릭했습니다.", Toast.LENGTH_LONG).show()
+                Toast.makeText(itemView.context, "'${data.title}' 앨범을 선택했습니다.", Toast.LENGTH_LONG).show()
                 itemView.getContext().startActivity(MainActivity.getLaunchIntentPhoto(itemView.context, data.id));
             })
 

@@ -2,7 +2,6 @@ package com.jangpro.googleframe
 
 import android.content.Context
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -12,10 +11,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.gms.auth.GoogleAuthException
-import com.google.android.gms.auth.GoogleAuthUtil
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.common.Scopes
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -27,6 +22,7 @@ import com.jangpro.googleframe.restful.RetrofitInterface
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.nav_header_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,13 +30,12 @@ import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.IOException
 
 const val PREFS_FILENAME = "com.jangpro.googleframe"
-//var accessToken: String? = null
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var getAccessToken = GetAccessToken()
+    val user = FirebaseAuth.getInstance().currentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +55,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
 
+        if(user != null) {
+            Log.d("user", ""+user.email)
+            //user_email.text = ""
+        }
     }
 
     private var first_time: Long = 0
@@ -130,8 +129,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onResume() {
         super.onResume()
-        val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
+            //Log.d("user", ""+user.email) //accessToken:ya29.Gl...
             runAlbum()
         } else {
             startActivity(getLaunchIntent(this))
@@ -180,13 +179,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         }
 
-        fun getLaunchIntentAlbums(from: Context, access_token: String) =
-            Intent(from, AlbumsActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                putExtra("access_token", access_token)
-            }
-
-        fun getLaunchIntentPhoto(from: Context, album_id: String) = Intent(from, Slideshow::class.java).apply {
+        fun getLaunchIntentPhoto(from: Context, album_id: String) = Intent(from, SlideShow::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             //putExtra("access_token", accessToken)
             putExtra("album_id", album_id)
