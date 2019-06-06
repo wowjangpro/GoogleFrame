@@ -313,6 +313,11 @@ class SlideShow : AppCompatActivity() {
         }
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
     override fun onBackPressed() {
         Log.d("onBackPressed", "Click!")
         startActivity(LoginActivity.getLaunchIntent(this))
