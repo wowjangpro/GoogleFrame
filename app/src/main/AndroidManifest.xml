@@ -13,6 +13,8 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".ScheduleActivity">
+        </activity>
         <activity
                 android:name=".SlideShow"
                 android:configChanges="orientation|keyboardHidden|screenSize"

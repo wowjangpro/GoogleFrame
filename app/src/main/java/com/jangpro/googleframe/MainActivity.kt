@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             Log.d("user", ""+user.photoUrl)
             nav_header_view.user_email.text = user.email
             nav_header_view.user_name.text = user.displayName
-            Glide.with(this).load(user.photoUrl).apply(RequestOptions.circleCropTransform()).override(200,200).into(nav_header_view.user_profile)
+            Glide.with(this).load(user.photoUrl).apply(RequestOptions.circleCropTransform()).override(250,250).into(nav_header_view.user_profile)
         }
     }
 
@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
             R.id.nav_manage -> {
-
+                startActivity(getLaunchIntentSchedule(this))
             }
             R.id.nav_signout -> {
                 signOut()
@@ -186,11 +186,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
         }
-
         fun getLaunchIntentPhoto(from: Context, album_id: String) = Intent(from, SlideShow::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             //putExtra("access_token", accessToken)
             putExtra("album_id", album_id)
+        }
+        fun getLaunchIntentSchedule(from: Context) = Intent(from, ScheduleActivity::class.java).apply {
         }
     }
 

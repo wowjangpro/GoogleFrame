@@ -5,16 +5,16 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:background="#000000"
-             tools:context=".Slideshow">
+             tools:context=".SlideShow">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
-        <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:id="@+id/imageView"/>
+    <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:id="@+id/imageView"/>
 
     <LinearLayout
                   style="?metaButtonBarStyle"
