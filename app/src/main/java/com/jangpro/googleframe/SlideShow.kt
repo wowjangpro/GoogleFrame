@@ -1,8 +1,10 @@
 package com.jangpro.googleframe
 
+import android.graphics.Point
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.Display
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -32,6 +34,8 @@ class SlideShow : AppCompatActivity() {
     private var pageToken: String? = null
     private var getPhotos = GetPhotos()
     private var getAccessToken = GetAccessToken()
+    private var disW = 100
+    private var disH = 100
 
     private val mHideHandler = Handler()
     private val mHidePart2Runnable = Runnable {
@@ -82,6 +86,13 @@ class SlideShow : AppCompatActivity() {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         dummy_button.setOnTouchListener(mDelayHideTouchListener)
+
+        var display:Display = getWindowManager().getDefaultDisplay()
+        var disSize = Point()
+        display.getSize(disSize)
+        disW = disSize.x
+        disH = disSize.y
+        Log.d("displaySize", "W=" + disW+"/H=" + disH)
 
         albumId = intent.getStringExtra("album_id")
         callPhotoData(albumId, "")
@@ -292,7 +303,7 @@ class SlideShow : AppCompatActivity() {
             if (!this.isFinishing()) {
                 val dt = Date()
                 Log.d("SHOWDATE", dt.toString())
-                Glide.with(this@SlideShow).load((mediaItems as List<MediaItems>)[i].baseUrl)
+                Glide.with(this@SlideShow).load((mediaItems as List<MediaItems>)[i].baseUrl+"=w"+disW)
                     .transition(GenericTransitionOptions.with(android.R.anim.slide_in_left)).into(imageView)
 
                 var datenow = LocalDate.parse(createDate.substring(0, 10), DateTimeFormatter.ISO_DATE)
