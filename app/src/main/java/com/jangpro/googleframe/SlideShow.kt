@@ -19,6 +19,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -301,14 +303,16 @@ class SlideShow : AppCompatActivity() {
             Log.d("mediaList-cnt", "" + itemCnt)
             Log.d("mediaList-baseUrl", "" + (mediaItems as List<MediaItems>)[i].baseUrl)
             if (!this.isFinishing()) {
-                val dt = Date()
-                Log.d("SHOWDATE", dt.toString())
                 Glide.with(this@SlideShow).load((mediaItems as List<MediaItems>)[i].baseUrl+"=w"+disW)
                     .transition(GenericTransitionOptions.with(android.R.anim.slide_in_left)).into(imageView)
 
-                var datenow = LocalDate.parse(createDate.substring(0, 10), DateTimeFormatter.ISO_DATE)
+                //var datenow = LocalDate.parse(createDate.substring(0, 10), DateTimeFormatter.ISO_DATE)
+                var dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+                var newDateFormat = DateFormat.getDateInstance(DateFormat.FULL)
+                //var photoDate = dateFormat.parse(createDate)
+                var photoDate = newDateFormat.format(dateFormat.parse(createDate))
 
-                fullscreen_content.setText(datenow.toString())
+                fullscreen_content.setText(photoDate.toString())
                 i++
                 if (i == itemCnt) {
                     mDelayHandler.removeCallbacksAndMessages(null)
